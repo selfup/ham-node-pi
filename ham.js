@@ -50,5 +50,5 @@ flex.on('data', function(data) {
 })
 
 io.sockets.on('connection', socket => {
-  socketTracker{socket: socket}
+  socketTracker['socket'] = socket
 })
