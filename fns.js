@@ -40,6 +40,7 @@ const sliceToChannel = (slice) => {
   const slcAtn = slice['txant']
   const frq = +slice['RF_frequency']
   const antToPin = state.antennaPayloadKey[slcAtn]
+  if (!antToPin) return 
   if (state.validAtennas[slcAtn] && frq >= 3.5) state.payload[antToPin] = false
   if (state.validAtennas[slcAtn] && frq < 3.5) state.payload[antToPin] = true
   if (slice["tx"] === "1" && frq < 3.5) state.payload[antToPin] = true
