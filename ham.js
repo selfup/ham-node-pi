@@ -31,7 +31,9 @@ const sendPayload = (payload) => {
 
 const io = socketIo(server)
 
-const socketTracker = {}
+const socketTracker = {socket:
+  {emit: (one, two) => null }
+}
 
 const flex = new net.Socket()
 flex.connect(4992, '10.0.0.18')
