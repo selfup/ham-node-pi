@@ -42,10 +42,12 @@ flex.on('data', function(data) {
   sliceFormatter(inboundSlices)
   runSlices()
   sendPayload(state.payload)
-  // console.log("17: " + state.payload['17']);
   socketTracker.socket.emit('hello', state.payload)
 })
 
 io.sockets.on('connection', socket => {
   socketTracker['socket'] = socket
+  socket.on('message', (channel, message) => {
+    if (channel === 'initalData') socket.emit('hello', state.payload)
+  })
 })

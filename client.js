@@ -53,3 +53,7 @@ const vm = new Vue({
     </div>
   `
 })
+
+rb.send('initalData', (message) => {
+  makePinsIntoArray(message)
+})
