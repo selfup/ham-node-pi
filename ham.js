@@ -1,5 +1,4 @@
 const net = require('net')
-const clri = require('clri')
 const http = require('http')
 const socketIo = require('socket.io')
 
