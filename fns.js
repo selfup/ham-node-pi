@@ -54,12 +54,6 @@ const runSlices = () => {
   }
 }
 
-const openChannelPayloadPrinter = (payload) => {
-  // console.log("17: " + payload['17'])
-  // console.log(new Date() + "\n");
-  return null
-}
-
 module.exports = {
   state,
   formatIt,
@@ -67,6 +61,5 @@ module.exports = {
   appStateUpdater,
   sliceFormatter,
   sliceToChannel,
-  runSlices,
-  openChannelPayloadPrinter,
+  runSlices
 }
