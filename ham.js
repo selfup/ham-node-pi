@@ -1,8 +1,9 @@
 const net = require('net')
-const http     = require('http')
+const clri = require('clri')
+const http = require('http')
 const socketIo = require('socket.io')
-const port     = process.env.PORT || 5000
 
+const port = process.env.PORT || 5000
 const server = http.createServer()
   .listen(port, () => {
   console.log(`Listening on port ${port}.`)
@@ -31,25 +32,23 @@ const sendPayload = (payload) => {
 
 const io = socketIo(server)
 
+const socketTracker = {}
+
 const flex = new net.Socket()
 flex.connect(4992, '10.0.0.18')
 flex.write("c1|sub slice all\n")
 flex.on('close', function() {
   console.log('Connection closed')
 })
+flex.on('data', function(data) {
+  const firstFormat = formatIt(data.toString('utf8'))
+  const inboundSlices = txSlices(firstFormat)
+  sliceFormatter(inboundSlices)
+  runSlices()
+  sendPayload(state.payload)
+  socketTracker.socket.emit('hello', state.payload)
+})
 
 io.sockets.on('connection', socket => {
-  flex.on('data', function(data) {
-    const firstFormat = formatIt(data.toString('utf8'))
-    const inboundSlices = txSlices(firstFormat)
-    sliceFormatter(inboundSlices)
-    runSlices()
-    sendPayload(state.payload)
-    socket.emit('hello', state.payload)
-  })
-  socket.on('message', (channel, message) => {
-    if (channel === 'createTable') {
-      socket.emit('hello', state.payload)
-    }
-  })
+  socketTracker{socket: socket}
 })

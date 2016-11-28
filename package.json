@@ -9,7 +9,7 @@
   },
   "author": "selfup",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "socket.io": "^1.7.1"
   }
 }
