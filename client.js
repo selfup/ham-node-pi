@@ -6,10 +6,6 @@ const socket = io
 
 const rb = socket
 
-const initIo = () => {
-  rb.send('createTable', "lol")
-}
-
 const makePinsIntoArray = (data) => {
   const keys = Object.keys(data)
   const values = keys.map(e => data[e])
@@ -57,5 +53,3 @@ const vm = new Vue({
     </div>
   `
 })
-
-initIo()

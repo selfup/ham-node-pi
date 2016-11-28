@@ -42,6 +42,7 @@ flex.on('data', function(data) {
   sliceFormatter(inboundSlices)
   runSlices()
   sendPayload(state.payload)
+  // console.log("17: " + state.payload['17']);
   socketTracker.socket.emit('hello', state.payload)
 })
 
