@@ -31,10 +31,14 @@ const sendPayload = (payload) => {
 
 const io = socketIo(server)
 
+const flex = new net.Socket()
+flex.connect(4992, '10.0.0.18')
+flex.write("c1|sub slice all\n")
+flex.on('close', function() {
+  console.log('Connection closed')
+})
+
 io.sockets.on('connection', socket => {
-  const flex = new net.Socket()
-  flex.connect(4992, '10.0.0.18')
-  flex.write("c1|sub slice all\n")
   flex.on('data', function(data) {
     const firstFormat = formatIt(data.toString('utf8'))
     const inboundSlices = txSlices(firstFormat)
@@ -42,9 +46,6 @@ io.sockets.on('connection', socket => {
     runSlices()
     sendPayload(state.payload)
     socket.emit('hello', state.payload)
-  })
-  flex.on('close', function() {
-  	console.log('Connection closed')
   })
   socket.on('message', (channel, message) => {
     if (channel === 'createTable') {

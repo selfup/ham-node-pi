@@ -1,4 +1,4 @@
-const socket = io.connect('http://localhost:5000', {reconnect: true})
+const socket = io.connect('http://10.0.0.230:5000', {reconnect: true})
 
 const rb = socket
 
