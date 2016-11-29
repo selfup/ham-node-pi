@@ -9,9 +9,7 @@ const rb = socket
 const makePinsIntoArray = (data) => {
   const keys = Object.keys(data)
   const values = keys.map(e => data[e])
-  const newPins = keys.map((e, i) => {
-    return {num: e, gpio: values[i]}
-  })
+  const newPins = keys.map((e, i) => ({num: e, gpio: values[i]})
   Vue.set(vm.$data, 'pins', newPins)
 }
 
