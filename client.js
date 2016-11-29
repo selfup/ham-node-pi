@@ -48,14 +48,8 @@ const vm = new Vue({
   web socket logic below
 */
 
-const socket = io
-  .connect(
-    'http://10.0.0.230:5000',
-    {reconnect: true}
-  )
+const socket = io.connect('http://10.0.0.230:5000', {reconnect: true})
 
-const rb = socket
+socket.on('hello', message => makePinsIntoArray(message))
 
-rb.on('hello', message => makePinsIntoArray(message))
-
-rb.send('initalData', message => makePinsIntoArray(message))
+socket.send('initalData', message => makePinsIntoArray(message))
