@@ -40,23 +40,21 @@ const sliceToChannel = (slice) => {
   const slcAtn = slice['txant']
   const frq = +slice['RF_frequency']
   const antToPin = state.antennaPayloadKey[slcAtn]
+  if (!antToPin) return 
   if (state.validAtennas[slcAtn] && frq >= 3.5) state.payload[antToPin] = false
   if (state.validAtennas[slcAtn] && frq < 3.5) state.payload[antToPin] = true
+  if (slice["tx"] === "1" && frq < 3.5) state.payload[antToPin] = true
+  if (slice["tx"] === "0") state.payload[antToPin] = false
 }
 
 const runSlices = () => {
   if (state.appSlices) {
     if (Object.keys(state.appSlices).length > 0) {
       for (const [sliceNum, sliceInfo] of Object.entries(state.appSlices)) {
-        if (sliceInfo["tx"] == "1") sliceToChannel(sliceInfo)
+        sliceToChannel(sliceInfo)
       }
     }
   }
-}
-
-const openChannelPayloadPrinter = (payload) => {
-  console.log("17: " + payload['17'])
-  console.log(new Date() + "\n");
 }
 
 module.exports = {
@@ -66,6 +64,5 @@ module.exports = {
   appStateUpdater,
   sliceFormatter,
   sliceToChannel,
-  runSlices,
-  openChannelPayloadPrinter,
+  runSlices
 }

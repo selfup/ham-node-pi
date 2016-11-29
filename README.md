@@ -2,7 +2,9 @@
 
 ### Automated Antenna Controller
 
-In JavaScript :awesome:
+In JavaScript :smile:
+
+`node -v` >= 7.1
 
 ### host machine
 
