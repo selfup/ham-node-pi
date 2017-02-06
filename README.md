@@ -15,7 +15,3 @@ In JavaScript :smile:
 Should work on: Windows 10 - macOS - Linux
 
 `npm start`
-
-# DISCLAIMER
-
-This a continuation of *HAM Radio* side projects
