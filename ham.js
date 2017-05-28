@@ -16,11 +16,14 @@ const {
 } = require('./fns')
 
 const sendPayload = (payload) => {
-  const rpi = new net.Socket()
-  rpi.connect(2000, '10.0.0.230', () => {
-    rpi.write(JSON.stringify(payload))
-    rpi.end()
-    rpi.destroy()
+  const payloadToParams = Object.keys(payload).map((pin) => {
+    return `${pin}=${payload[pin]}`
+  })
+
+  const endpoint = `localhost:9292/set?${payloadToParams}`
+
+  http.get('http://' + endpoint, (res) => {
+    console.log(res.body)
   })
 }
 
@@ -32,22 +35,27 @@ const socketTracker = {
   }
 }
 
-const flex = new net.Socket()
-flex.connect(4992, '10.0.0.18')
-flex.write("c1|sub slice all\n")
-flex.on('close', function() { return null } )
-flex.on('data', function(data) {
-  const firstFormat = formatIt(data.toString('utf8'))
-  const inboundSlices = txSlices(firstFormat)
-  sliceFormatter(inboundSlices)
-  runSlices()
-  sendPayload(state.payload)
-  socketTracker.socket.emit('hello', state.payload)
-})
+// const flex = new net.Socket()
+// flex.connect(4992, '10.0.0.18')
+// flex.write("c1|sub slice all\n")
+// flex.on('close', function() { return null } )
+// flex.on('data', function(data) {
+  // const firstFormat = formatIt(data.toString('utf8'))
+  // const inboundSlices = txSlices(firstFormat)
+  // sliceFormatter(inboundSlices)
+  // runSlices()
+  // sendPayload(state.payload)
+  // socketTracker.socket.emit('hello', state.payload)
+// })
 
 io.sockets.on('connection', socket => {
   socketTracker['socket'] = socket
   socket.on('message', (channel, message) => {
     if (channel === 'initalData') socket.emit('hello', state.payload)
+    if (channel === 'updatePin') {
+      sendPayload(message) // for testing purposes!
+      Object.assign(state.payload, message)
+      socket.emit('hello', state.payload)
+    }
   })
 })
