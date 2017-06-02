@@ -1,24 +1,29 @@
 const state = require('./state')
 
 const formatIt = msg => msg
-  .split("\n").map(e => e.split(' ')).map((e) => {
+  .split('\n')
+  .map(e => e.split(' '))
+  .map((e) => {
     const key = e[0]
     e.shift
-    return ({key: key, value: e})
+    return ({ key: key, value: e })
   })
 
 const txSlices = response => response
   .map(e => {
     const key = e['key']
     const value = e['value']
-    if (key.split('|')[1] === "slice") return ({slice: value})
+    if (key.split('|')[1] === 'slice') return ({ slice: value })
     return value
   })
   .filter(e => e !== 0)
 
 const appStateUpdater = (slice, values, num) => {
   if (typeof slice !== 'string') {
-    slice.map(e => e.split('=')).forEach(e => values[e[0]] = e[1])
+    slice
+      .map(e => e.split('='))
+      .forEach(e => values[e[0]] = e[1])
+
     if (!Object.keys(state.appSlices).includes(num)) {
       state.appSlices[num] = values
     } else {
@@ -28,7 +33,7 @@ const appStateUpdater = (slice, values, num) => {
 }
 
 const sliceFormatter = slices => slices
-  .map(slice => {
+  .map((slice) => {
     const newValues = {}
     const newSlice =  Object.keys(slice).map(e => slice[e])[0]
     const sliceNumber = newSlice[1]
@@ -40,19 +45,23 @@ const sliceToChannel = (slice) => {
   const slcAtn = slice['txant']
   const frq = +slice['RF_frequency']
   const antToPin = state.antennaPayloadKey[slcAtn]
-  if (!antToPin) return 
-  if (state.validAtennas[slcAtn] && frq >= 3.5) state.payload[antToPin] = false
-  if (state.validAtennas[slcAtn] && frq < 3.5) state.payload[antToPin] = true
-  if (slice["tx"] === "1" && frq < 3.5) state.payload[antToPin] = true
-  if (slice["tx"] === "0") state.payload[antToPin] = false
+  const antennaState = state.payload[antToPin]
+
+  if (!antToPin) return null
+
+  const validAtennaSlice = state.validAtennas[slcAtn]
+  if (validAtennaSlice && frq >= 3.5) antennaState = false
+  if (validAtennaSlice && frq < 3.5) antennaState = true
+
+  const currentSlice = slice['tx']
+  if (currentSlice === '1' && frq < 3.5) antennaState = true
+  if (currentSlice === '0') antennaState = false
 }
 
 const runSlices = () => {
-  if (state.appSlices) {
-    if (Object.keys(state.appSlices).length > 0) {
-      for (const [sliceNum, sliceInfo] of Object.entries(state.appSlices)) {
-        sliceToChannel(sliceInfo)
-      }
+  if (state.appSlices && Object.keys(state.appSlices).length > 0) {
+    for (const [sliceNum, sliceInfo] of Object.entries(state.appSlices)) {
+      sliceToChannel(sliceInfo)
     }
   }
 }
@@ -64,5 +73,5 @@ module.exports = {
   appStateUpdater,
   sliceFormatter,
   sliceToChannel,
-  runSlices
+  runSlices,
 }

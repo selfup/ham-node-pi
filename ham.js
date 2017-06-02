@@ -12,19 +12,22 @@ const {
   appStateUpdater,
   sliceFormatter,
   sliceToChannel,
-  runSlices
+  runSlices,
 } = require('./fns')
 
 const sendPayload = (payload) => {
-  const payloadToParams = Object.keys(payload).map((pin) => {
-    return `${pin}=${payload[pin]}`
-  })
+  const payloadToParams = Object
+    .keys(payload)
+    .map((pin) => {
+      return `${pin}=${payload[pin]}`
+    })
 
   const endpoint = `localhost:9292/set?${payloadToParams}`
 
-  http.get('http://' + endpoint, (res) => {
-    console.log(res.body)
-  })
+  http
+    .get('http://' + endpoint, (res) => {
+      console.log(res.body)
+    })
 }
 
 const io = socketIo(server)
@@ -51,11 +54,18 @@ const socketTracker = {
 io.sockets.on('connection', socket => {
   socketTracker['socket'] = socket
   socket.on('message', (channel, message) => {
-    if (channel === 'initalData') socket.emit('hello', state.payload)
-    if (channel === 'updatePin') {
-      sendPayload(message) // for testing purposes!
-      Object.assign(state.payload, message)
-      socket.emit('hello', state.payload)
+    switch(channel) {
+      case 'initalData':
+        socket.emit('hello', state.payload)
+        break
+      case 'updatePin':
+        sendPayload(message)
+        Object.assign(state.payload, message)
+        socket.emit('hello', state.payload)
+        break
+      default:
+        null
+        break
     }
   })
 })

@@ -4,8 +4,6 @@ const socket = io
     {reconnect: true}
   )
 
-const rb = socket
-
 const makePinsIntoArray = (data) => {
   const keys = Object.keys(data)
   const values = keys.map(e => data[e])
@@ -13,7 +11,7 @@ const makePinsIntoArray = (data) => {
   Vue.set(vm.$data, 'pins', newPins)
 }
 
-rb.on('hello', (message) => {
+socket.on('hello', (message) => {
   makePinsIntoArray(message)
 })
 
@@ -28,7 +26,7 @@ const vm = new Vue({
   },
   methods: {
     updatePin(power, num) {
-      rb.send('updatePin', { [num]: power })      
+      socket.send('updatePin', { [num]: power })
     }
   },
   template: `
@@ -59,6 +57,6 @@ const vm = new Vue({
   `
 })
 
-rb.send('initalData', (message) => {
+socket.send('initalData', (message) => {
   makePinsIntoArray(message)
 })
